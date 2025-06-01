@@ -8,7 +8,7 @@ router.get('/api/data', async (req, res) => {
     const connection = await createConnection();
     const [rows] = await connection.execute('SELECT * FROM loct_data_secure_fields_new');
 
-    console.log([rows])
+   
     await connection.end();
 
     res.json(rows);
