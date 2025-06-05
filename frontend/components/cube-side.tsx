@@ -1,321 +1,20 @@
 "use client";
-import { Box, Button, Text, Tooltip } from "@chakra-ui/react";
+import { Box, Button, Text, Tooltip,Spinner } from "@chakra-ui/react";
 import { Portal } from "@chakra-ui/react";
 
 import { useState, useEffect, useRef } from "react";
 
 interface AppData {
+  id:string;
   images: string;
   "Tool_Tip-non_executable": string;
   Executable_two_Letters: string;
   ToolTips: string;
+  Status: string;
   "Number of tip selected": string;
   "Launch Command": string;
 }
 
-// Extended data for each side with up to 26 combinations
-// const sideData: Record<string, AppData[]> = {
-//   Access: [
-//     {
-//       letters: "Ac",
-//       tooltip: "Access Control Manager",
-//       launchCommand: "launch-access-control",
-//       usageCount: 95,
-//     },
-//     {
-//       letters: "Au",
-//       tooltip: "Authentication Portal",
-//       launchCommand: "launch-auth",
-//       usageCount: 88,
-//     },
-//     {
-//       letters: "Pr",
-//       tooltip: "Permission Manager",
-//       launchCommand: "launch-permissions",
-//       usageCount: 82,
-//     },
-//     {
-//       letters: "Id",
-//       tooltip: "Identity Verification",
-//       launchCommand: "launch-identity",
-//       usageCount: 76,
-//     },
-//     {
-//       letters: "Se",
-//       tooltip: "Security Scanner",
-//       launchCommand: "launch-security",
-//       usageCount: 70,
-//     },
-//     {
-//       letters: "Lo",
-//       tooltip: "Login Manager",
-//       launchCommand: "launch-login",
-//       usageCount: 65,
-//     },
-//     {
-//       letters: "Ke",
-//       tooltip: "Key Management",
-//       launchCommand: "launch-keys",
-//       usageCount: 60,
-//     },
-//     {
-//       letters: "Bi",
-//       tooltip: "Biometric Auth",
-//       launchCommand: "launch-biometric",
-//       usageCount: 55,
-//     },
-//     {
-//       letters: "To",
-//       tooltip: "Token Generator",
-//       launchCommand: "launch-token",
-//       usageCount: 50,
-//     },
-//   ],
-//   Autonomy: [
-//     {
-//       letters: "Ai",
-//       tooltip: "AI Decision Engine",
-//       launchCommand: "launch-ai-engine",
-//       usageCount: 98,
-//     },
-//     {
-//       letters: "Au",
-//       tooltip: "Autonomous Systems",
-//       launchCommand: "launch-auto-systems",
-//       usageCount: 92,
-//     },
-//     {
-//       letters: "Ml",
-//       tooltip: "Machine Learning Hub",
-//       launchCommand: "launch-ml-hub",
-//       usageCount: 87,
-//     },
-//     {
-//       letters: "Ro",
-//       tooltip: "Robotics Control",
-//       launchCommand: "launch-robotics",
-//       usageCount: 83,
-//     },
-//     {
-//       letters: "Ne",
-//       tooltip: "Neural Networks",
-//       launchCommand: "launch-neural",
-//       usageCount: 78,
-//     },
-//     {
-//       letters: "De",
-//       tooltip: "Decision Trees",
-//       launchCommand: "launch-decisions",
-//       usageCount: 74,
-//     },
-//     {
-//       letters: "Pr",
-//       tooltip: "Process Automation",
-//       launchCommand: "launch-process",
-//       usageCount: 69,
-//     },
-//     {
-//       letters: "Wo",
-//       tooltip: "Workflow Engine",
-//       launchCommand: "launch-workflow",
-//       usageCount: 65,
-//     },
-//     {
-//       letters: "Sc",
-//       tooltip: "Smart Contracts",
-//       launchCommand: "launch-contracts",
-//       usageCount: 60,
-//     },
-//     {
-//       letters: "Op",
-//       tooltip: "Optimization Engine",
-//       launchCommand: "launch-optimize",
-//       usageCount: 56,
-//     },
-//     {
-//       letters: "Le",
-//       tooltip: "Learning Algorithms",
-//       launchCommand: "launch-learning",
-//       usageCount: 52,
-//     },
-//     {
-//       letters: "Pl",
-//       tooltip: "Planning System",
-//       launchCommand: "launch-planning",
-//       usageCount: 48,
-//     },
-//   ],
-//   Communication: [
-//     {
-//       letters: "Ch",
-//       tooltip: "Chat Interface",
-//       launchCommand: "launch-chat",
-//       usageCount: 96,
-//     },
-//     {
-//       letters: "Em",
-//       tooltip: "Email Manager",
-//       launchCommand: "launch-email",
-//       usageCount: 91,
-//     },
-//     {
-//       letters: "Vi",
-//       tooltip: "Video Conferencing",
-//       launchCommand: "launch-video",
-//       usageCount: 86,
-//     },
-//     {
-//       letters: "Me",
-//       tooltip: "Messaging System",
-//       launchCommand: "launch-messaging",
-//       usageCount: 81,
-//     },
-//     {
-//       letters: "Vo",
-//       tooltip: "Voice Calls",
-//       launchCommand: "launch-voice",
-//       usageCount: 76,
-//     },
-//     {
-//       letters: "Sl",
-//       tooltip: "Slack Integration",
-//       launchCommand: "launch-slack",
-//       usageCount: 71,
-//     },
-//   ],
-//   Visualization: [
-//     {
-//       letters: "Da",
-//       tooltip: "Dashboard Creator",
-//       launchCommand: "launch-dashboard",
-//       usageCount: 94,
-//     },
-//     {
-//       letters: "Ch",
-//       tooltip: "Chart Builder",
-//       launchCommand: "launch-charts",
-//       usageCount: 89,
-//     },
-//     {
-//       letters: "Gr",
-//       tooltip: "Graph Visualizer",
-//       launchCommand: "launch-graphs",
-//       usageCount: 84,
-//     },
-//     {
-//       letters: "Ma",
-//       tooltip: "Map Interface",
-//       launchCommand: "launch-maps",
-//       usageCount: 79,
-//     },
-//     {
-//       letters: "Re",
-//       tooltip: "Report Generator",
-//       launchCommand: "launch-reports",
-//       usageCount: 74,
-//     },
-//     {
-//       letters: "Ta",
-//       tooltip: "Table Designer",
-//       launchCommand: "launch-tables",
-//       usageCount: 69,
-//     },
-//     {
-//       letters: "Ga",
-//       tooltip: "Gauge Widgets",
-//       launchCommand: "launch-gauges",
-//       usageCount: 64,
-//     },
-//     {
-//       letters: "He",
-//       tooltip: "Heatmap Creator",
-//       launchCommand: "launch-heatmap",
-//       usageCount: 59,
-//     },
-//     {
-//       letters: "Tr",
-//       tooltip: "Tree Diagrams",
-//       launchCommand: "launch-tree",
-//       usageCount: 54,
-//     },
-//   ],
-//   "Data Analysis": [
-//     {
-//       letters: "An",
-//       tooltip: "Analytics Engine",
-//       launchCommand: "launch-analytics",
-//       usageCount: 97,
-//     },
-//     {
-//       letters: "St",
-//       tooltip: "Statistics Tool",
-//       launchCommand: "launch-stats",
-//       usageCount: 93,
-//     },
-//     {
-//       letters: "Pr",
-//       tooltip: "Predictive Models",
-//       launchCommand: "launch-predictions",
-//       usageCount: 88,
-//     },
-//     {
-//       letters: "Da",
-//       tooltip: "Data Mining",
-//       launchCommand: "launch-mining",
-//       usageCount: 84,
-//     },
-//     {
-//       letters: "Bi",
-//       tooltip: "Business Intelligence",
-//       launchCommand: "launch-bi",
-//       usageCount: 79,
-//     },
-//     {
-//       letters: "Et",
-//       tooltip: "ETL Pipeline",
-//       launchCommand: "launch-etl",
-//       usageCount: 75,
-//     },
-//     {
-//       letters: "Wa",
-//       tooltip: "Data Warehouse",
-//       launchCommand: "launch-warehouse",
-//       usageCount: 70,
-//     },
-//     {
-//       letters: "Cl",
-//       tooltip: "Data Cleaning",
-//       launchCommand: "launch-cleaning",
-//       usageCount: 66,
-//     },
-//   ],
-//   "AI Models": [
-//     {
-//       letters: "Gp",
-//       tooltip: "GPT Interface",
-//       launchCommand: "launch-gpt",
-//       usageCount: 99,
-//     },
-//     {
-//       letters: "Cv",
-//       tooltip: "Computer Vision",
-//       launchCommand: "launch-cv",
-//       usageCount: 80,
-//     },
-//     {
-//       letters: "Nl",
-//       tooltip: "NLP Processor",
-//       launchCommand: "launch-nlp",
-//       usageCount: 70,
-//     },
-//     {
-//       letters: "Tr",
-//       tooltip: "Training Pipeline",
-//       launchCommand: "launch-training",
-//       usageCount: 50,
-//     },
-//   ],
-// };
 
 // Feature images and tooltips for each side using the provided images
 const featureImages: Record<string, { src: string; tooltip: string }> = {
@@ -335,7 +34,7 @@ const featureImages: Record<string, { src: string; tooltip: string }> = {
     src: "/images/visual.png",
     tooltip: "Visualization",
   },
-  "Data Analysis": {
+  Data: {
     src: "/images/data.png",
     tooltip: "Data Analysis",
   },
@@ -354,7 +53,7 @@ const getRandomHorizontalPosition = (sideName: string, index: number) => {
   // Use sideName and index to create a consistent seed for randomness
   const seed = sideName.charCodeAt(0) + index * 7;
   const random = ((seed * 9301 + 49297) % 233280) / 233280; // Simple pseudo-random
-  return 10 + random * 65; // Random position between 10% and 80%
+  return 16 + random * 65; // Random position between 10% and 80%
 };
 
 export default function CubeSide({ sideName }: CubeSideProps) {
@@ -364,21 +63,48 @@ export default function CubeSide({ sideName }: CubeSideProps) {
   const [apps, setApps] = useState<AppData[]>([]);
   const [infoBoxPosition, setInfoBoxPosition] = useState({ top: 0, left: 0 });
   const containerRef = useRef<HTMLDivElement>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleMouseEnter = (app: AppData, event: React.MouseEvent) => {
+  const handleMouseEnter = (app: AppData, event: React.MouseEvent<HTMLElement>) => {
     setHoveredApp(app.Executable_two_Letters);
-    if (containerRef.current) {
-      const containerRect = containerRef.current.getBoundingClientRect();
-      const targetRect = event.currentTarget.getBoundingClientRect();
-      setInfoBoxPosition({
-        top: 20,
-        left: 0,
-      });
-    }
+     
+    const targetRect = event.currentTarget.getBoundingClientRect();
+    const containerRect = event.currentTarget.parentElement?.getBoundingClientRect() || { top: 0, left: 0 };
+    setInfoBoxPosition({
+      top: containerRect.top - 30,
+      left: containerRect.left-200,
+    });
+  
+   
   };
 
   const handleMouseLeave = () => {
     setHoveredApp(null);
+  };
+
+  const handleDoubleClick = async (app: AppData) => {
+      setIsLoading(true);
+    try {
+      const response = await fetch('https://rotating-cube-backend.onrender.com/api/increase-tip-selected', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ characterId: app.id }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to increase tip count');
+      }
+      
+      // Refetch the apps to update the display
+      await fetchApps();
+      alert(`Command executed for ${app.Executable_two_Letters}`);
+    } catch (error) {
+      console.error('Error increasing tip count:', error);
+    } finally{
+      setIsLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -387,13 +113,15 @@ export default function CubeSide({ sideName }: CubeSideProps) {
 
   const fetchApps = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/data");
+      const response = await fetch(
+        "https://rotating-cube-backend.onrender.com/api/data"
+      );
 
       if (!response.ok) {
         throw new Error("Failed to fetch apps");
       }
       const data = await response.json();
-      console.log("Fetched apps:", data);
+      // console.log("Fetched apps:", data);
 
       // Filter and format the data based on sideName
       const filteredApps = data.filter(
@@ -401,7 +129,7 @@ export default function CubeSide({ sideName }: CubeSideProps) {
           app["Tool_Tip-non_executable"].toLowerCase() ===
           sideName.toLowerCase()
       );
-      console.log("Filtered apps:", filteredApps);
+      // console.log("Filtered apps:", filteredApps);
 
       if (filteredApps.length > 0) {
         setApps(filteredApps);
@@ -413,7 +141,10 @@ export default function CubeSide({ sideName }: CubeSideProps) {
       setApps([]);
     }
   };
-  const featureImage = featureImages[sideName]?.src ;
+  const featureImage = featureImages[sideName]?.src;
+
+  // console.log("feature image", featureImage);
+  // console.log("side name", sideName);
 
   // Sort apps by "Number of tip selected" (highest first)
   const sortedApps = apps.sort(
@@ -421,6 +152,8 @@ export default function CubeSide({ sideName }: CubeSideProps) {
       parseInt(b["Number of tip selected"]) -
       parseInt(a["Number of tip selected"])
   );
+
+  // console.log("Sorted apps:", sortedApps);
 
   const handleAppClick = async (letters: string, launchCommand: string) => {
     console.log(`Launching: ${launchCommand}`);
@@ -447,7 +180,7 @@ export default function CubeSide({ sideName }: CubeSideProps) {
 
   // Calculate position based on usage (higher usage = higher position in bowl)
   const getVerticalPosition = (index: number, totalApps: number) => {
-    return 10 + (index / (totalApps - 1)) * 40;
+    return 20 + (index / (totalApps - 1)) * 40;
   };
 
   return (
@@ -462,7 +195,7 @@ export default function CubeSide({ sideName }: CubeSideProps) {
       {/* Feature image */}
       <Box
         position="absolute"
-        top="32%"
+        top="31%"
         left="50%"
         userSelect="none"
         transform="translateX(-50%)"
@@ -470,14 +203,13 @@ export default function CubeSide({ sideName }: CubeSideProps) {
       >
         <Tooltip
           label={apps[0]?.["Tool_Tip-non_executable"]}
-          color="white"
+          color="black"
           fontSize="12px"
           fontWeight="bold"
-          bg="rgba(0, 0, 0, 0.7)"
+          bg="transparent"
           px={2}
           py={1}
           borderRadius="md"
-          hasArrow
           placement="top"
         >
           <Box
@@ -512,11 +244,11 @@ export default function CubeSide({ sideName }: CubeSideProps) {
       {/* Glass Bowl Container */}
       <Box
         position="absolute"
-        bottom="100px"
+        bottom="115px"
         left="50%"
         transform="translateX(-50%)"
-        width="160px"
-        height="120px"
+        width="200px"
+        height="110px"
         zIndex={20}
       >
         {/* Glass Bowl Image */}
@@ -530,16 +262,38 @@ export default function CubeSide({ sideName }: CubeSideProps) {
           zIndex={21}
         >
           <img
-            src="/images/glass-bowl.png"
+            src="/images/cloud.png"
             alt="Glass Bowl"
             style={{
               width: "100%",
               height: "100%",
               objectFit: "contain",
-              opacity: "0.7",
+              opacity: "0.9",
             }}
           />
         </Box>
+
+        {isLoading && (
+        <Box
+          position="fixed"
+          top="50%"
+          left="50%"
+          transform="translate(-50%, -50%)"
+          zIndex={9999}
+          bg="rgba(0, 0, 0, 0.5)"
+          borderRadius="md"
+          p={4}
+        >
+           {/* <Spinner
+          thickness="5px"
+          speed="0.65s"
+          emptyColor="gray.200"
+          color="blue.500"
+          size="xl"
+        /> */}
+          <Text color="white" fontSize='10px' whiteSpace='nowrap'  mt={2}>Executing command...</Text>
+        </Box>
+      )}
 
         {/* Floating Characters inside the bowl */}
 
@@ -555,43 +309,47 @@ export default function CubeSide({ sideName }: CubeSideProps) {
                 position="absolute"
                 top={`${topPosition}%`}
                 left={`${leftPosition}%`}
+                right="10px"
                 zIndex={26}
+                width="12px"
                 onMouseEnter={(e) => handleMouseEnter(app, e)}
                 onMouseLeave={handleMouseLeave}
                 animation={`float-${index % 3} 3s ease-in-out infinite`}
-                 sx={{
+                sx={{
                   "@keyframes float-0": {
                     "0%, 100%": { transform: "translateY(0px) rotate(0deg)" },
                     "50%": { transform: "translateY(-2px) rotate(0.5deg)" },
                   },
                   "@keyframes float-1": {
-                    "0%, 100%": { transform: "translateY(-1px) rotate(-0.3deg)" },
+                    "0%, 100%": {
+                      transform: "translateY(-1px) rotate(-0.3deg)",
+                    },
                     "50%": { transform: "translateY(-3px) rotate(0.3deg)" },
                   },
                   "@keyframes float-2": {
-                    "0%, 100%": { transform: "translateY(-0.5px) rotate(0.3deg)" },
+                    "0%, 100%": {
+                      transform: "translateY(-0.5px) rotate(0.3deg)",
+                    },
                     "50%": { transform: "translateY(-2.5px) rotate(-0.5deg)" },
                   },
                 }}
               >
                 <Button
                   id={`button-${app.Executable_two_Letters}`}
-                  onClick={() =>
-                    handleAppClick(
-                      app.Executable_two_Letters,
-                      app["Launch Command"]
-                    )
-                  }
+                  // onClick={() =>
+                  //   handleAppClick(
+                  //     app.Executable_two_Letters,
+                  //     app["Launch Command"]
+                  //   )
+                  // }
+                  onDoubleClick={() => handleDoubleClick(app)}
                   bg="transparent"
                   color="white"
-                  px={0.5}
-                  py={0.5}
                   borderRadius="sm"
                   fontSize="6px"
                   fontWeight="bold"
                   _hover={{
-                    transform: "scale(1.2)",
-                    textShadow: "0 0 8px rgba(255, 255, 255, 0.8)",
+                    cursor: "pointer",
                   }}
                   transition="all 0.3s"
                   height="auto"
@@ -599,8 +357,8 @@ export default function CubeSide({ sideName }: CubeSideProps) {
                   size="xs"
                   border="none"
                   textShadow="0 1px 2px rgba(0, 0, 0, 0.5)"
-                  minH="10px"
-                  minW="12px"
+                  minH="12px"
+                  minW="10px"
                 >
                   <Text as="span" fontSize="10px" mr="0.5px">
                     {app.Executable_two_Letters[0]}
@@ -615,27 +373,31 @@ export default function CubeSide({ sideName }: CubeSideProps) {
 
           {hoveredApp && (
             <Box
-              position="absolute"
-              top={-20}
-              left={-20}
+              position="fixed"
+              top={`${0}`}
+              left={`${-20}px`}
               zIndex={9999}
-              bg="rgba(0, 0, 0, 0.8)"
-              color="white"
+              bg='transparent'
+                
+              fontWeight={"bold"}
+              color={
+                apps.find((app) => app.Executable_two_Letters === hoveredApp)
+                  ?.Status === "Dark"
+                  ? "#71797E"
+                  : "black"
+              }
               p={2}
               maxHeight="100px"
               borderRadius="md"
+              whiteSpace="nowrap"
               boxShadow="lg"
-              maxWidth="90px"
+              maxWidth="100%"
             >
               <Text fontWeight="semibold" fontSize="10px">
                 {
                   apps.find((app) => app.Executable_two_Letters === hoveredApp)
                     ?.ToolTips
                 }
-              </Text>
-
-              <Text color="cyan.400" fontSize="xx-small">
-                Click to launch
               </Text>
             </Box>
           )}

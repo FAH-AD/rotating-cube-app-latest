@@ -14,7 +14,7 @@ const sideNames = [
   "Autonomy", // right
   "Communication", // left
   "Visualization", // top
-  "Data Analysis", // bottom
+  "Data", // bottom
 ]
 
 interface RotatingCubeProps {
@@ -154,7 +154,7 @@ export default function RotatingCube({ isRotating }: RotatingCubeProps) {
                 userSelect="none"
                 fontSize="12px"
                 fontWeight="bold"
-                bg="rgba(0, 0, 0, 0.7)"
+                bg="rgba(70, 70, 70, 0.7)"
                 px={2}
                 py={1}
                 borderRadius="md"
